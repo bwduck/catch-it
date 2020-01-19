@@ -1,12 +1,16 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const bananaImg = new Image();
-const binImg = new Image();
+const blueBinImg = new Image();
+const blackBinImg = new Image();
+const greenBinImg = new Image();
 const canImg = new Image();
 const paperImg = new Image();
 bananaImg.src =
   "https://images.vexels.com/media/users/3/143061/isolated/lists/aaf71ed4e387a6838e1c521fbecde77a-banana-icon-fruit.png";
-binImg.src = "./blue-bin.png";
+blueBinImg.src = "./blue-bin.png";
+blackBinImg.src = "./black-bin.png";
+greenBinImg.src = "./green-bin.png";
 canImg.src = "./pop-can.png";
 paperImg.src = "./paper.png";
 const screenWidth = (canvas.width = window.innerWidth - 50);
@@ -21,9 +25,14 @@ const BANANA_WIDTH = 50;
 const BANANA_HEIGHT = 50;
 const BIN_WIDTH = 80;
 const BIN_HEIGHT = 50;
+
 const RIGHT_KEY = 39;
 const LEFT_KEY = 37;
 const STOP_KEY = 40;
+const BLUE_BIN_KEY = 49;
+const BLACK_BIN_KEY = 50;
+const GREEN_BIN_KEY = 51;
+
 const MAX_VEL = 8;
 const MIN_VEL = 3;
 const MAX_ITEMS = 2;
@@ -42,13 +51,33 @@ function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+const BIN = {
+  BLUE: 0,
+  BLACK: 1,
+  GREEN: 2
+};
+
 function Bin() {
   this.x = random(0, width - BIN_WIDTH);
   this.y = height - BIN_HEIGHT;
+  this.type = BIN.BLUE;
 }
 
+Bin.prototype.setType = function(type) {
+  this.type = type;
+};
+
 Bin.prototype.draw = function() {
-  ctx.drawImage(binImg, this.x, this.y, BIN_WIDTH, BIN_HEIGHT);
+  let img = blueBinImg;
+  switch (this.type) {
+    case BIN.BLACK:
+      img = blackBinImg;
+      break;
+    case BIN.GREEN:
+      img = greenBinImg;
+      break;
+  }
+  ctx.drawImage(img, this.x, this.y, BIN_WIDTH, BIN_HEIGHT);
 };
 
 Bin.prototype.goRight = function() {
@@ -135,6 +164,15 @@ document.addEventListener("keydown", event => {
       break;
     case STOP_KEY:
       bin.stop();
+      break;
+    case BLUE_BIN_KEY:
+      bin.setType(BIN.BLUE);
+      break;
+    case BLACK_BIN_KEY:
+      bin.setType(BIN.BLACK);
+      break;
+    case GREEN_BIN_KEY:
+      bin.setType(BIN.GREEN);
       break;
   }
 });
